@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\RoomRenting;
 use Carbon\Carbon;
+use App\RoomRentingRoom;
 
 class HomeController extends Controller
 {
@@ -25,7 +26,7 @@ class HomeController extends Controller
     {
         $this->data['rooms'] = Room::all()->map(function ($room) {
             $data = $room->transform();
-            $data['available'] = rand(0, 1);
+            $data['available'] = !(RoomRentingRoom::where('room_id', $room->id)->where('end_time', null)->count() > 0);
             return $data;
         });
         return view('room', $this->data);
@@ -34,8 +35,7 @@ class HomeController extends Controller
     public function getRoom(Request $request)
     {
         $user = User::where('email', $request->email)->first();
-        if($user == null)
-        {
+        if ($user == null) {
             $user = new User;
             $user->name = $request->name;
             $user->email = $request->email;
@@ -54,6 +54,12 @@ class HomeController extends Controller
             "price_per_hour" => $room->roomType->price_per_hour,
             "start_time" => Carbon::now()
         ]);
+    }
+
+    public function rentings()
+    {
+        $this->data['room_rentings'] = RoomRenting::all(); 
+        return view('renting', $this->data);
     }
 
     public function addData()

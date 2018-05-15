@@ -35,4 +35,12 @@ class RoomRenting extends Model
     {
         return $this->belongsTo(User::class, 'staff_id');
     }
+
+    public function transform()
+    {
+        return [
+            'id' => $this->id,
+            ''
+        ];
+    }
 }

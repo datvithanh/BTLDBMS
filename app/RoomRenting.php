@@ -40,7 +40,6 @@ class RoomRenting extends Model
     {
         return [
             'id' => $this->id,
-            ''
         ];
     }
 }
